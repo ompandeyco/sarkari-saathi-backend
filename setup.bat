@@ -1,0 +1,9 @@
+@echo off
+echo Creating virtual environment...
+python -m venv venv
+echo Activating...
+call venv\Scripts\activate
+echo Installing packages...
+pip install -r requirements.txt
+echo Done! Run: venv\Scripts\activate
+pause

@@ -1,0 +1,6 @@
+{
+  "pyrefly.exclude": [
+    "D:/_pyrefly_virtual_*",
+    "**/_pyrefly_virtual_*"
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "total_schemes": 90,
+  "model_used": "paraphrase-multilingual-MiniLM-L12-v2",
+  "created_at": "2026-05-27T14:18:11.743968",
+  "chroma_path": "D:\\omproject\\sarkari-saathi-backend\\chroma_db"
+}
