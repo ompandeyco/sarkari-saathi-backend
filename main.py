@@ -15,26 +15,21 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-# Global instances of ML models
-retriever = None
-generator = None
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """
-    Lifespan context manager for FastAPI.
-    Models are now loaded lazily on first request to avoid timeout during startup.
-    """
-    print("Starting up Sarkari Saathi API...")
-    yield
-    print("Shutting down Sarkari Saathi API...")
-
 app = FastAPI(
     title="Sarkari Saathi RAG API",
     description="RAG-powered scheme matching for Indian citizens",
-    version="1.0.0",
-    lifespan=lifespan
+    version="1.0.0"
 )
+
+# Global variables - loaded lazily
+retriever = None
+generator = None
+
+@app.on_event("startup")
+async def startup():
+    global generator
+    generator = AnswerGenerator()
+    print("Server started - models load on first request")
 
 # Port configuration
 port = int(os.getenv("PORT", 8000))
@@ -106,13 +101,6 @@ async def match_schemes(request: MatchRequest):
         except Exception as e:
             print(f"Retriever not ready: {e}")
 
-    if generator is None:
-        print("Lazily loading Generator...")
-        try:
-            generator = AnswerGenerator()
-        except Exception as e:
-            print(f"Generator not ready: {e}")
-
     if retriever is None or generator is None:
         # Fallback local data if models aren't ready
         return {
@@ -166,12 +154,7 @@ async def match_schemes(request: MatchRequest):
 
 @app.get("/health")
 async def health():
-    return {
-        "status": "ok",
-        "schemes_indexed": 50,
-        "model_loaded": True,
-        "version": "1.0.0"
-    }
+    return {"status": "ok", "version": "1.0.0"}
 @app.get("/stats")
 async def stats():
     """Returns general statistics about the scheme database."""
