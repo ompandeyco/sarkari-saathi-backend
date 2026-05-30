@@ -1,11 +1,8 @@
 [phases.setup]
-nixPkgs = ["python312"]
+nixPkgs = ["python311", "python311Packages.pip"]
 
 [phases.install]
 cmds = ["pip install -r requirements.txt"]
-
-[phases.build]
-cmds = ["python pipeline/scrape_schemes.py && python pipeline/embed_and_store.py"]
 
 [start]
 cmd = "uvicorn main:app --host 0.0.0.0 --port $PORT"
